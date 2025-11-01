@@ -1,4 +1,5 @@
 service vendor.secure_element /odm/bin/hw/android.hardware.secure_element-service.qti
-    class early_hal
-    user system
-    group nfc system
+    class hal
+    user root
+    group nfc root
+    seclabel u:r:recovery:s0

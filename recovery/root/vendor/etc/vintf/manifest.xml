@@ -3,6 +3,10 @@
         device/qcom/canoe/manifest_canoe.xml
 -->
 <manifest version="9.0" type="device" target-level="202504">
+    <hal format="aidl">
+        <name>android.hardware.gatekeeper</name>
+        <fqname>IGatekeeper/default</fqname>
+    </hal>
     <sepolicy>
         <version>202504</version>
     </sepolicy>
