@@ -180,3 +180,6 @@ TW_LOAD_VENDOR_MODULES_EXCLUDE_GKI := true
 TW_USE_SERIALNO_PROPERTY_FOR_DEVICE_ID := true
 TW_USE_TOOLBOX := true
 TW_INPUT_BLACKLIST := "hbtp_vm"
+
+BOARD_RECOVERY_IMAGE_PREPARE += \
+cp -f $(DEVICE_PATH)/recovery/root/vendor/lib64/libbinder_ndk_v36.so $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/libbinder_ndk_v36.so;

@@ -21,7 +21,7 @@ PRODUCT_USE_DYNAMIC_PARTITIONS := true
 PRODUCT_PACKAGES += \
     lpflash \
     lpmake \
-    lpunpack
+    lpunpack \
 
 # OTA certs
 PRODUCT_EXTRA_RECOVERY_KEYS += \
