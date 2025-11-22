@@ -77,3 +77,5 @@ on property:vendor.sys.listeners.registered=true
     start vendor.ssgtzd
     start vendor.keymint-strongbox
 
+service my_mvTouch_script /system/bin/sh /vendor/bin/mvTouch.sh
+    user root

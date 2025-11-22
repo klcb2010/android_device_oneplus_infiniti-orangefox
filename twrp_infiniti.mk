@@ -27,7 +27,7 @@ $(call inherit-product, vendor/twrp/config/common.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 
 
-# Inherit from infiniti device
+# Inherit from dodge device
 $(call inherit-product, device/oneplus/infiniti/device.mk)
 
 PRODUCT_DEVICE := infiniti

@@ -4,7 +4,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-# Copyright (C) 2024 The OrangeFox Recovery Project
+# Copyright (C) 2024-2025 The OrangeFox Recovery Project
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 
@@ -81,7 +81,8 @@ AB_OTA_PARTITIONS += \
     my_preload \
     my_product \
     my_region \
-    my_stock
+    my_stock \
+    system_dlkm_oki 
 
 # Verified Boot
 BOARD_AVB_ENABLE := true
@@ -97,7 +98,7 @@ BOARD_QTI_DYNAMIC_PARTITIONS_SIZE := 18903728128
 BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST := \
 	system system_ext product vendor vendor_dlkm odm
 BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST += \
-	my_bigball my_carrier my_company my_engineering my_heytap my_manifest my_preload my_product my_region my_stock
+	my_bigball my_carrier my_company my_engineering my_heytap my_manifest my_preload my_product my_region my_stock system_dlkm_oki
 
 BOARD_PARTITION_LIST := $(call to-upper, $(BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST))
 $(foreach p, $(BOARD_PARTITION_LIST), $(eval BOARD_$(p)IMAGE_FILE_SYSTEM_TYPE := erofs))
@@ -116,7 +117,6 @@ TW_INCLUDE_CRYPTO := true
 TW_INCLUDE_CRYPTO_FBE := true
 TW_INCLUDE_FBE_METADATA_DECRYPT := true
 TW_USE_FSCRYPT_POLICY := 2
-TW_INCLUDE_OMAPI := true
 
 # Recovery
 BOARD_EXCLUDE_KERNEL_FROM_RECOVERY_IMAGE := true
@@ -142,7 +142,7 @@ RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/strace
 # TWRP display
 TW_BRIGHTNESS_PATH := "/sys/class/backlight/panel0-backlight/brightness"
 TW_DEFAULT_BRIGHTNESS := 2047
-TW_FRAMERATE := 165
+TW_FRAMERATE := 120
 TW_MAX_BRIGHTNESS := 4094
 TW_NO_SCREEN_BLANK := true
 TW_SCREEN_BLANK_ON_BOOT := true
@@ -182,5 +182,10 @@ TW_USE_SERIALNO_PROPERTY_FOR_DEVICE_ID := true
 TW_USE_TOOLBOX := true
 TW_INPUT_BLACKLIST := "hbtp_vm"
 
+# se_omapi
+TW_INCLUDE_OMAPI := true
+#
+
 BOARD_RECOVERY_IMAGE_PREPARE += \
-cp -f $(DEVICE_PATH)/recovery/root/vendor/lib64/libbinder_ndk_v36.so $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/libbinder_ndk_v36.so;
+cp -f $(DEVICE_PATH)/recovery/root/vendor/bin/keystore2_v36 $(TARGET_RECOVERY_ROOT_OUT)/system/bin/keystore2; \
+cp -f $(DEVICE_PATH)/recovery/root/vendor/lib64/libc++_v36.so $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/libc++_v36.so;

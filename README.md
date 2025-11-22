@@ -1,5 +1,20 @@
 # OnePlus 15 infiniti OrangeFox device tree
 
+## Working
+
+- [X] Display
+- [X] Touch 
+- [X] Decryption
+- [X] Flashing
+- [X] Backup & Restore
+- [X] MTP/OTG Storage
+- [X] ADB/FastbootD
+- [X] Factory Reset
+- [X] Vibrator
+- [X] Display & Vibration Settings
+
+## Not working
+- [ ] Flashlight
 
 # How To Build
 

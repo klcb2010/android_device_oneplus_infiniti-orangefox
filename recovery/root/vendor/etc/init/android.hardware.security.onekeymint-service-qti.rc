@@ -1,18 +1,18 @@
-# Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
-# All rights reserved.
-# Confidential and Proprietary - Qualcomm Technologies, Inc. 
+# Copyright (c) 2021 Qualcomm Technologies, Inc.
+# All Rights Reserved.
+# Confidential and Proprietary - Qualcomm Technologies, Inc.
 
 on init
-    start vendor.keymint
+    start vendor.keymint-qti
 
-service vendor.keymint /vendor/bin/hw/android.hardware.security.onekeymint-service-qti
+service vendor.keymint-qti /vendor/bin/hw/android.hardware.security.onekeymint-service-qti
     class early_hal
-    user root
-    group root drmrpc
+    user system
+    group system drmrpc
     seclabel u:r:recovery:s0
-    
+
 on property:vendor.car.hiber=hiberExit
-    stop vendor.keymint
-    start vendor.keymint
+    stop vendor.keymint-qti
+    start vendor.keymint-qti
     stop keystore2
-    start keystore2    
+    start keystore2
