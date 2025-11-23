@@ -23,15 +23,6 @@ jobs:
           ASSETS=$(echo "$LATEST" | jq -r '.assets[] | .name + "||" + .browser_download_url')
           echo "$ASSETS" > assets_list.txt
 
-      - name: 下载 release 资产
-        run: |
-          mkdir -p release_assets
-          while IFS= read -r line; do
-            NAME="${line%%||*}"
-            URL="${line##*||}"
-            curl -L -o "release_assets/$NAME" "$URL"
-          done < assets_list.txt
-
       - name: 检查本仓库是否已有该 release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -43,12 +34,19 @@ jobs:
             echo "EXISTS=false" >> $GITHUB_ENV
           fi
 
-      - name: 发布新 release
+      - name: 下载 release 资产并发布
         if: env.EXISTS == 'false'
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
+          mkdir -p release_assets
+          while IFS= read -r line; do
+            NAME="${line%%||*}"
+            URL="${line##*||}"
+            curl -L -o "release_assets/$NAME" "$URL"
+          done < assets_list.txt
+
           gh release create $LATEST_TAG release_assets/* \
             --repo klcb2010/android_device_oneplus_infiniti-orangefox \
             --title "$LATEST_TAG" \
             --notes "同步自 koaaN/android_device_oneplus_infiniti-orangefox"
+        env:
+          GH_TOKEN: ${{ github.token }}
