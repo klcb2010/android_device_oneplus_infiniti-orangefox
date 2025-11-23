@@ -1,0 +1,54 @@
+name: Sync Releases
+
+on:
+  schedule:
+    # 每天凌晨 2 点运行一次（UTC 时间）
+    - cron: '0 2 * * *'
+  workflow_dispatch: # 手动触发也可以
+
+jobs:
+  sync-releases:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 安装依赖
+        run: |
+          sudo apt update
+          sudo apt install -y jq curl gh
+
+      - name: 获取上游最新 release 信息
+        id: upstream
+        run: |
+          LATEST=$(curl -s https://api.github.com/repos/koaaN/android_device_oneplus_infiniti-orangefox/releases/latest)
+          TAG=$(echo "$LATEST" | jq -r '.tag_name')
+          echo "LATEST_TAG=$TAG" >> $GITHUB_ENV
+          ASSETS=$(echo "$LATEST" | jq -r '.assets[] | .name + "||" + .browser_download_url')
+          echo "$ASSETS" > assets_list.txt
+
+      - name: 下载 release 资产
+        run: |
+          mkdir release_assets
+          while IFS= read -r line; do
+            NAME=$(echo $line | cut -d'||' -f1)
+            URL=$(echo $line | cut -d'||' -f2)
+            curl -L -o "release_assets/$NAME" "$URL"
+          done < assets_list.txt
+
+      - name: 登录 GitHub CLI
+        run: gh auth login --with-token < ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 检查本仓库是否已有该 release
+        id: check
+        run: |
+          if gh release view $LATEST_TAG --repo klcb2010/android_device_oneplus_infiniti-orangefox >/dev/null 2>&1; then
+            echo "EXISTS=true" >> $GITHUB_ENV
+          else
+            echo "EXISTS=false" >> $GITHUB_ENV
+          fi
+
+      - name: 发布新 release
+        if: env.EXISTS == 'false'
+        run: |
+          gh release create $LATEST_TAG release_assets/* \
+            --repo klcb2010/android_device_oneplus_infiniti-orangefox \
+            --title "$LATEST_TAG" \
+            --notes "同步自 koaaN/android_device_oneplus_infiniti-orangefox"
