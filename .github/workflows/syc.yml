@@ -2,9 +2,8 @@ name: Sync Releases
 
 on:
   schedule:
-    # 每天凌晨 2 点运行一次（UTC 时间）
     - cron: '0 2 * * *'
-  workflow_dispatch: # 手动触发也可以
+  workflow_dispatch:
 
 jobs:
   sync-releases:
@@ -21,7 +20,6 @@ jobs:
           LATEST=$(curl -s https://api.github.com/repos/koaaN/android_device_oneplus_infiniti-orangefox/releases/latest)
           TAG=$(echo "$LATEST" | jq -r '.tag_name')
           echo "LATEST_TAG=$TAG" >> $GITHUB_ENV
-          # 用 || 分隔 name 和 url
           ASSETS=$(echo "$LATEST" | jq -r '.assets[] | .name + "||" + .browser_download_url')
           echo "$ASSETS" > assets_list.txt
 
@@ -29,17 +27,10 @@ jobs:
         run: |
           mkdir -p release_assets
           while IFS= read -r line; do
-            # bash 字符串分割，避免 cut 的单字符限制
             NAME="${line%%||*}"
             URL="${line##*||}"
             curl -L -o "release_assets/$NAME" "$URL"
           done < assets_list.txt
-
-      - name: 登录 GitHub CLI
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "$GITHUB_TOKEN" | gh auth login --with-token
 
       - name: 检查本仓库是否已有该 release
         id: check
