@@ -36,7 +36,10 @@ jobs:
           done < assets_list.txt
 
       - name: 登录 GitHub CLI
-        run: gh auth login --with-token < ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "$GITHUB_TOKEN" | gh auth login --with-token
 
       - name: 检查本仓库是否已有该 release
         id: check
